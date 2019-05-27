@@ -1,6 +1,6 @@
 import sys
 import numpy as np
-from control.matlab import *
+import controller
 sys.path.remove('/opt/ros/kinetic/lib/python2.7/dist-packages')
 import cv2
 
@@ -89,7 +89,7 @@ def find_force(cart):
         [0, 0, 0, 1]
     ])
     R = np.matrix([500])
-    K, S, E = lqr(A, B, Q, R)
+    K = controller.LQR(A, B, Q, R)
     np.matrix(K)
     x = np.matrix([
         [np.squeeze(np.asarray(cart.pos.x))],
