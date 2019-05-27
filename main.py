@@ -42,9 +42,6 @@ class Cart:
         self.mass = 5
 
 
-g = 9.81
-t = 0.01
-
 
 def display(cart):
     img = np.zeros((1000, 1000, 3), np.uint8)
@@ -54,8 +51,8 @@ def display(cart):
     cv2.waitKey(5)
 
 
-def add_force(cart, f):
-    global g, t
+def add_force(cart, f, t):
+    g = 9.81
     cart.pole.pastVelocity = cart.pole.velocity
     cart.pole.velocity = (cart.pole.angle - cart.pole.previousAngle) / t
     cart.pastVelocity = cart.velocity
@@ -74,12 +71,11 @@ def add_force(cart, f):
 
 
 def find_force(cart):
-    global g
     A = np.matrix([
         [0, 1, 0, 0],
-        [0, 0, g * cart.pole.mass / cart.mass, 0],
+        [0, 0, 9.81 * cart.pole.mass / cart.mass, 0],
         [0, 0, 0, 1],
-        [0, 0, (cart.mass + cart.pole.mass) * g / (cart.pole.length * cart.mass), 0]
+        [0, 0, (cart.mass + cart.pole.mass) * 9.81 / (cart.pole.length * cart.mass), 0]
     ])
     B = np.matrix([[0], [1 / cart.mass], [0], [1 / (cart.pole.length * cart.mass)]])
     Q = np.matrix([
@@ -105,6 +101,7 @@ def find_force(cart):
 
 if __name__ == "__main__":
     cart = Cart()
+    t = 0.01
     while True:
         display(cart)
-        add_force(cart, find_force(cart))
+        add_force(cart, find_force(cart), t)
